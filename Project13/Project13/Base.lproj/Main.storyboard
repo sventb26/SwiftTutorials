@@ -98,6 +98,7 @@
                         <outlet property="changeFilterBtn" destination="wrS-Eo-u9y" id="wRA-yK-fkW"/>
                         <outlet property="imageView" destination="ApD-O7-XyH" id="oUH-Fe-R9j"/>
                         <outlet property="intensity" destination="8Ud-OR-fva" id="WNR-gB-nRf"/>
+                        <outlet property="saveBtn" destination="3sO-kX-sEM" id="eK9-uv-vTD"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>

@@ -15,6 +15,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
 	@IBOutlet var imageView: UIImageView!
 	@IBOutlet var intensity: UISlider!
 	@IBOutlet var changeFilterBtn: UIButton!
+	@IBOutlet var saveBtn: UIButton!
 	var currentImage: UIImage!
 	var context: CIContext!
 	var currentFilter: CIFilter!
@@ -40,6 +41,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
 	
 	
 	@IBAction func save(_ sender: Any) {
+		while currentImage == nil { return }
 		UIImageWriteToSavedPhotosAlbum(imageView.image!, self, #selector(image(_:didFinishSavingWithError:contextInfo:)), nil)
 	}
 	
@@ -98,6 +100,9 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
 		
 		dismiss(animated: true)
 		
+		saveBtn.isEnabled = true
+		changeFilterBtn.isEnabled = true
+		
 		currentImage = image
 		
 		let beginImage = CIImage(image: currentImage)
@@ -133,6 +138,13 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
 		
 		context = CIContext()
 		currentFilter = CIFilter(name: "CISepiaTone")
+		
+		let ac = UIAlertController(title: "Pick a Photo", message: "Begin by clicking '+' to pick a photo from your photo library.", preferredStyle: .alert)
+		ac.addAction(UIAlertAction(title: "OK", style: .default))
+		present(ac, animated: true)
+		
+		saveBtn.isEnabled = false
+		changeFilterBtn.isEnabled = false
 		
 	}
 

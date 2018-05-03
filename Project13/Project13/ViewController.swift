@@ -14,6 +14,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
 	//MARK: IB Outlets
 	@IBOutlet var imageView: UIImageView!
 	@IBOutlet var intensity: UISlider!
+	@IBOutlet var changeFilterBtn: UIButton!
 	var currentImage: UIImage!
 	var context: CIContext!
 	var currentFilter: CIFilter!
@@ -77,6 +78,8 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
 		currentFilter.setValue(beginImage, forKey: kCIInputImageKey)
 		
 		applyProcessing()
+		changeFilterBtn.setTitle(currentFilter.name, for: .normal)
+		
 	}
 	
 	

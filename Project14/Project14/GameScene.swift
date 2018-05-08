@@ -4,7 +4,7 @@
 //
 //  Created by Administrator on 5/4/18.
 //  Copyright © 2018 SmartApps. All rights reserved.
-//  https://www.hackingwithswift.com/read/14/3/penguin-show-thyself-skaction-movebyxyduration
+//
 
 import SpriteKit
 import GameplayKit
@@ -24,38 +24,6 @@ class GameScene: SKScene {
 	
 	
 	//MARK: Functions
-	override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-		if let touch = touches.first {
-			let location = touch.location(in: self)
-			let tappedNodes = nodes(at: location)
-			
-			for node in tappedNodes {
-				if node.name == "charFriend" {
-					let whackSlot = node.parent!.parent as! WhackSlot
-					if !whackSlot.isVisible { continue }
-					if whackSlot.isHit { continue }
-					
-					whackSlot.hit()
-					score -= 5
-					
-					run(SKAction.playSoundFileNamed("whackBad.caf", waitForCompletion: false))
-				} else if node.name == "charEnemy" {
-					let whackSlot = node.parent!.parent as! WhackSlot
-					if !whackSlot.isVisible { continue }
-					if whackSlot.isHit { continue }
-					
-					whackSlot.charNode.xScale = 0.85
-					whackSlot.charNode.yScale = 0.85
-					
-					whackSlot.hit()
-					score += 1
-					
-					run(SKAction.playSoundFileNamed("whack.caf", waitForCompletion: false))
-				}
-			}
-		}
-	}
-	
 	func createSlot(at position: CGPoint) {
 		let slot = WhackSlot()
 		slot.configure(at: position)
@@ -117,5 +85,37 @@ class GameScene: SKScene {
 		for i in 0 ..< 4 { createSlot(at: CGPoint(x: 180 + (i * 170), y: 140)) }
 		
 		DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [unowned self] in self.createEnemy()}
+	}
+	
+	override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+		if let touch = touches.first {
+			let location = touch.location(in: self)
+			let tappedNodes = nodes(at: location)
+			
+			for node in tappedNodes {
+				if node.name == "charFriend" {
+					let whackSlot = node.parent!.parent as! WhackSlot
+					if !whackSlot.isVisible { continue }
+					if whackSlot.isHit { continue }
+					
+					whackSlot.hit()
+					score -= 5
+					
+					run(SKAction.playSoundFileNamed("whackBad.caf", waitForCompletion: false))
+				} else if node.name == "charEnemy" {
+					let whackSlot = node.parent!.parent as! WhackSlot
+					if !whackSlot.isVisible { continue }
+					if whackSlot.isHit { continue }
+					
+					whackSlot.charNode.xScale = 0.85
+					whackSlot.charNode.yScale = 0.85
+					
+					whackSlot.hit()
+					score += 1
+					
+					run(SKAction.playSoundFileNamed("whack.caf", waitForCompletion: false))
+				}
+			}
+		}
 	}
 }

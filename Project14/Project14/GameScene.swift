@@ -102,6 +102,7 @@ class GameScene: SKScene {
 					score -= 5
 					
 					run(SKAction.playSoundFileNamed("whackBad.caf", waitForCompletion: false))
+					
 				} else if node.name == "charEnemy" {
 					let whackSlot = node.parent!.parent as! WhackSlot
 					if !whackSlot.isVisible { continue }

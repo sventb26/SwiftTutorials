@@ -20,6 +20,6 @@ class Capital: NSObject, MKAnnotation {
 		self.title = title
 		self.coordinate = coordinate
 		self.info = info
-		self.isFavorite = false
+		self.isFavorite = isFavorite
 	}
 }

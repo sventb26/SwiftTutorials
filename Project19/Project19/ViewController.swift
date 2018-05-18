@@ -28,8 +28,10 @@ class ViewController: UIViewController, MKMapViewDelegate {
 		//Check whether the annotation we're creating a view for is one of our "Capital" objects.
 		if annotation is Capital {
 			
+			let capital = annotation as! Capital
+			
 			//Try to dequeue an annotation view from the map view's pool of unused views.
-			var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier)
+			var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier) as? MKPinAnnotationView
 			
 			if annotationView == nil {
 				
@@ -47,7 +49,7 @@ class ViewController: UIViewController, MKMapViewDelegate {
 				annotationView!.annotation = annotation
 				
 			}
-			
+			setPinColor(view: annotationView!, capital: capital)
 			return annotationView
 		}
 		
@@ -56,14 +58,38 @@ class ViewController: UIViewController, MKMapViewDelegate {
 	}
 	
 	
+	
+	func updatePinView(view: MKAnnotationView, capital: Capital) {
+		//do something
+		let annotationView = view as! MKPinAnnotationView
+		capital.isFavorite = !capital.isFavorite
+		setPinColor(view: annotationView, capital: capital)
+	}
+	
+	
+	func setPinColor(view: MKPinAnnotationView, capital: Capital) {
+		if capital.isFavorite == true {
+			view.pinTintColor = UIColor.green
+		} else {
+			view.pinTintColor = UIColor.red
+		}
+	}
+	
+	
 	func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
 		
 		let capital = view.annotation as! Capital
 		let placeName = capital.title
 		let placeInfo = capital.info
+		var likeTitle = "Dislike"
+		
+		if capital.isFavorite == false {
+			likeTitle = "Like"
+		}
 		
 		let ac = UIAlertController(title: placeName, message: placeInfo, preferredStyle: .alert)
 		ac.addAction(UIAlertAction(title: "OK", style: .default))
+		ac.addAction(UIAlertAction(title: likeTitle, style: .default) { [unowned self] action in self.updatePinView(view: view, capital: capital)})
 		present(ac, animated: true)
 		
 	}
@@ -78,29 +104,27 @@ class ViewController: UIViewController, MKMapViewDelegate {
 	@objc func  editTapped() {
 		
 		let ac = UIAlertController(title: "Change view", message: nil, preferredStyle: .actionSheet)
-		ac.addAction(UIAlertAction(title: "Standard", style: .default) {action in self.setMapType(type: .standard)})
-		ac.addAction(UIAlertAction(title: "Sattelite", style: .default) {action in self.setMapType(type: .satellite)})
-		ac.addAction(UIAlertAction(title: "Hybrid", style: .default) {action in self.setMapType(type: .hybrid)})
+		ac.addAction(UIAlertAction(title: "Standard", style: .default) { [unowned self] action in self.setMapType(type: .standard)})
+		ac.addAction(UIAlertAction(title: "Sattelite", style: .default) { [unowned self] action in self.setMapType(type: .satellite)})
+		ac.addAction(UIAlertAction(title: "Hybrid", style: .default) { [unowned self] action in self.setMapType(type: .hybrid)})
 		ac.addAction(UIAlertAction(title: "Cancel", style: .cancel))
 		present(ac, animated: true)
 		
 	}
 	
 	
-	
 	//MARK: Override Functions
-	
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		
 		let editButton = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(editTapped))
 		self.navigationItem.rightBarButtonItem = editButton
 		
-		let london = Capital(title: "London", coordinate: CLLocationCoordinate2D(latitude: 51.507222, longitude: -0.1275), info: "Home to the 2012 Summer Olympics.")
-		let oslo = Capital(title: "Oslo", coordinate: CLLocationCoordinate2D(latitude: 59.95, longitude: 10.75), info: "Founded over a thousand years ago.")
-		let paris = Capital(title: "Paris", coordinate: CLLocationCoordinate2D(latitude: 48.8567, longitude: 2.3508), info: "Often called the City of Light.")
-		let rome = Capital(title: "Rome", coordinate: CLLocationCoordinate2D(latitude: 41.9, longitude: 12.5), info: "Has a whole country inside it.")
-		let washington = Capital(title: "Washington DC", coordinate: CLLocationCoordinate2D(latitude: 38.895111, longitude: -77.036667), info: "Named after George himself.")
+		let london = Capital(title: "London", coordinate: CLLocationCoordinate2D(latitude: 51.507222, longitude: -0.1275), info: "Home to the 2012 Summer Olympics.", isFavorite: false)
+		let oslo = Capital(title: "Oslo", coordinate: CLLocationCoordinate2D(latitude: 59.95, longitude: 10.75), info: "Founded over a thousand years ago.", isFavorite: false)
+		let paris = Capital(title: "Paris", coordinate: CLLocationCoordinate2D(latitude: 48.8567, longitude: 2.3508), info: "Often called the City of Light.", isFavorite: false)
+		let rome = Capital(title: "Rome", coordinate: CLLocationCoordinate2D(latitude: 41.9, longitude: 12.5), info: "Has a whole country inside it.", isFavorite: false)
+		let washington = Capital(title: "Washington DC", coordinate: CLLocationCoordinate2D(latitude: 38.895111, longitude: -77.036667), info: "Named after George himself.", isFavorite: true)
 		
 		mapView.addAnnotation(london)
 		mapView.addAnnotation(oslo)
@@ -113,7 +137,5 @@ class ViewController: UIViewController, MKMapViewDelegate {
 		super.didReceiveMemoryWarning()
 		// Dispose of any resources that can be recreated.
 	}
-
-
 }
 

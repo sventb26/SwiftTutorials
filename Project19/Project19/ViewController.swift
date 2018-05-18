@@ -15,6 +15,10 @@ class ViewController: UIViewController, MKMapViewDelegate {
 	@IBOutlet var mapView: MKMapView!
 	
 	
+	//MARK: Variables
+
+	
+	
 	//MARK: Functions
 	func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
 		
@@ -63,10 +67,34 @@ class ViewController: UIViewController, MKMapViewDelegate {
 		present(ac, animated: true)
 		
 	}
+
 	
+	func setMapType(type: MKMapType) {
+		mapView.mapType = type
+	}
+	
+	
+	//MARK: Objective C Functions
+	@objc func  editTapped() {
+		
+		let ac = UIAlertController(title: "Change view", message: nil, preferredStyle: .actionSheet)
+		ac.addAction(UIAlertAction(title: "Standard", style: .default) {action in self.setMapType(type: .standard)})
+		ac.addAction(UIAlertAction(title: "Sattelite", style: .default) {action in self.setMapType(type: .satellite)})
+		ac.addAction(UIAlertAction(title: "Hybrid", style: .default) {action in self.setMapType(type: .hybrid)})
+		ac.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+		present(ac, animated: true)
+		
+	}
+	
+	
+	
+	//MARK: Override Functions
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
+		
+		let editButton = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(editTapped))
+		self.navigationItem.rightBarButtonItem = editButton
 		
 		let london = Capital(title: "London", coordinate: CLLocationCoordinate2D(latitude: 51.507222, longitude: -0.1275), info: "Home to the 2012 Summer Olympics.")
 		let oslo = Capital(title: "Oslo", coordinate: CLLocationCoordinate2D(latitude: 59.95, longitude: 10.75), info: "Founded over a thousand years ago.")

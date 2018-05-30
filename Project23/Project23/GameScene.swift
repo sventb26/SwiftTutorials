@@ -16,6 +16,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 	var player: SKSpriteNode!
 	
 	var scoreLabel: SKLabelNode!
+	var gameOverLabel: SKLabelNode!
 	var score = 0 {
 		didSet {
 			scoreLabel.text = "Score: \(score)"
@@ -26,35 +27,75 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 	var gameTimer: Timer!
 	var isGameOver = false
 	
+	var rocketTimer: Timer!
+	var rockets = [SKNode]()
+	
 	
 	//MARK: Methods
 	@objc func createEnemy() {
+		
 		possibleEnemies = GKRandomSource.sharedRandom().arrayByShufflingObjects(in: possibleEnemies) as! [String]
 		let randomDistribution = GKRandomDistribution(lowestValue: 50, highestValue: 736)
 		
-		let sprite = SKSpriteNode(imageNamed: possibleEnemies[0])
-		sprite.position = CGPoint(x: 1200, y: randomDistribution.nextInt())
-		addChild(sprite)
+		let enemy = SKSpriteNode(imageNamed: possibleEnemies[0])
+		enemy.position = CGPoint(x: 1200, y: randomDistribution.nextInt())
+		enemy.name = "enemy"
+		addChild(enemy)
 		
-		sprite.physicsBody = SKPhysicsBody(texture: sprite.texture!, size: sprite.size)
-		sprite.physicsBody?.categoryBitMask = 1
-		sprite.physicsBody?.velocity = CGVector(dx: -500, dy: 0)
-		sprite.physicsBody?.angularVelocity = 5
-		sprite.physicsBody?.linearDamping = 0
-		sprite.physicsBody?.angularDamping = 0
+		enemy.physicsBody = SKPhysicsBody(texture: enemy.texture!, size: enemy.size)
+		enemy.physicsBody?.categoryBitMask = 1
+		enemy.physicsBody?.velocity = CGVector(dx: -500, dy: 0)
+		enemy.physicsBody?.angularVelocity = 5
+		enemy.physicsBody?.linearDamping = 0
+		enemy.physicsBody?.angularDamping = 0
 		
 	}
+	
+	
+	@objc func launchRockets() {
+		
+		let movementAmount: CGFloat = 1400
+		
+		createRocket(xMovement: movementAmount, x: Int(player.position.x), y: Int(player.position.y))
+	
+	}
+	
+	
+	func createRocket(xMovement: CGFloat, x: Int, y: Int) {
+		
+		let rocket = SKSpriteNode(imageNamed: "rocket")
+		rocket.position = CGPoint(x: x + 75, y: y)
+		rocket.zPosition = 1
+		rocket.colorBlendFactor = 1
+		rocket.name = "rocket"
+		rocket.color = .red
+		
+		let emitter = SKEmitterNode(fileNamed: "fuse")!
+		emitter.position = CGPoint(x: -22 , y: 0)
+		rocket.addChild(emitter)
+		
+		rocket.physicsBody = SKPhysicsBody(texture: rocket.texture!, size: rocket.size)
+		rocket.physicsBody?.contactTestBitMask = 1
+		rocket.physicsBody?.linearDamping = 0
+		rocket.physicsBody?.angularDamping = 0
+		
+		let path = UIBezierPath()
+		path.move(to: CGPoint(x: 0, y: 0))
+		path.addLine(to: CGPoint(x: xMovement, y: 0))
+		
+		let move = SKAction.follow(path.cgPath, asOffset: true, orientToPath: false, speed: 400)
+		rocket.run(move)
+		
+		addChild(rocket)
+	}
+	
 	
 	override func update(_ curentTime: TimeInterval) {
 		
 		for node in children {
-			if node.position.x < -300 {
+			if node.position.x < -300 || node.position.x > 1205 {
 				node.removeFromParent()
 			}
-		}
-		
-		if !isGameOver {
-			score += 1
 		}
 	}
 	
@@ -75,17 +116,80 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 	
 	
 	func didBegin(_ contact: SKPhysicsContact) {
-		let explosion = SKEmitterNode(fileNamed: "explosion")!
-		explosion.position = player.position
-		addChild(explosion)
 		
-		player.removeFromParent()
+		if contact.bodyA.node?.name == "enemy" && contact.bodyB.node?.name == "rocket" {
+			destroy(object: contact.bodyA.node! as! SKSpriteNode)
+			removeObject(object: contact.bodyB.node! as! SKSpriteNode)
+			score += 1
+		}
+		
+		if contact.bodyB.node?.name == "enemy" && contact.bodyA.node?.name == "rocket"{
+			destroy(object: contact.bodyB.node! as! SKSpriteNode)
+			removeObject(object: contact.bodyA.node! as! SKSpriteNode)
+			score += 1
+		}
+		
+		if contact.bodyA.node?.name == "enemy" && contact.bodyB.node?.name == "player" {
+			
+			destroy(object: contact.bodyA.node! as! SKSpriteNode)
+			destroy(object: contact.bodyB.node! as! SKSpriteNode)
+			gameOver()
+		}
+		
+		if contact.bodyB.node?.name == "enemy" && contact.bodyA.node?.name == "player" {
+			
+			destroy(object: contact.bodyA.node! as! SKSpriteNode)
+			destroy(object: contact.bodyB.node! as! SKSpriteNode)
+			gameOver()
+		}
+	}
+	
+	
+	func gameOver() {
 		
 		isGameOver = true
+		rocketTimer.invalidate()
+		gameTimer.invalidate()
+		gameOverLabel.isHidden = false
+	}
+	
+	func destroy(object: SKSpriteNode) {
+		
+		let explosion = SKEmitterNode(fileNamed: "explosion")!
+		explosion.position = object.position
+		addChild(explosion)
+		
+		object.isHidden = true
+		object.removeFromParent()
+		object.removeAllActions()
+		camera?.removeAllActions()
+		
+	}
+	
+	
+	func removeObject(object: SKSpriteNode) {
+		
+		object.isHidden = true
+		object.removeFromParent()
+		object.removeAllActions()
+		camera?.removeAllActions()
 	}
 	
 	
 	//MARK: Functions
+	override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+		
+		rocketTimer = Timer.scheduledTimer(timeInterval: 0.5, target: self, selector: #selector(launchRockets), userInfo: nil, repeats: true)
+		
+	}
+	
+	override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+		
+		rocketTimer.invalidate()
+		
+	}
+	
+	
 	override func didMove(to view: SKView) {
 		backgroundColor = UIColor.black
 		
@@ -97,6 +201,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 		
 		player = SKSpriteNode(imageNamed: "player")
 		player.position = CGPoint(x: 100, y: 384)
+		player.name = "player"
 		player.physicsBody = SKPhysicsBody(texture: player.texture!, size: player.size)
 		player.physicsBody?.contactTestBitMask = 1
 		addChild(player)
@@ -106,11 +211,20 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 		scoreLabel.horizontalAlignmentMode = .left
 		addChild(scoreLabel)
 		
-		gameTimer = Timer.scheduledTimer(timeInterval: 0.35, target: self, selector: #selector(createEnemy), userInfo: nil, repeats: true)
+		gameOverLabel = SKLabelNode(fontNamed: "Chalkduster")
+		gameOverLabel.text = "GAME OVER"
+		gameOverLabel.position = CGPoint(x: 512, y: 384)
+		gameOverLabel.horizontalAlignmentMode = .center
+		gameOverLabel.isHidden = true
+		addChild(gameOverLabel)
 		
 		score = 0
+		isGameOver = false
+		
+		gameTimer = Timer.scheduledTimer(timeInterval: 0.35, target: self, selector: #selector(createEnemy), userInfo: nil, repeats: true)
 		
 		physicsWorld.gravity = CGVector(dx: 0, dy: 0)
 		physicsWorld.contactDelegate = self
+		
 	}
 }

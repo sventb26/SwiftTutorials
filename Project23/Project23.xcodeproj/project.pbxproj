@@ -15,6 +15,7 @@
 		C3DA99C320BDEF4400298E5D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C3DA99C220BDEF4400298E5D /* Assets.xcassets */; };
 		C3DA99DB20BDF56B00298E5D /* Starfield.sks in Resources */ = {isa = PBXBuildFile; fileRef = C3DA99D020BDF03300298E5D /* Starfield.sks */; };
 		C3DA99DC20BDF56F00298E5D /* explosion.sks in Resources */ = {isa = PBXBuildFile; fileRef = C3DA99CF20BDF02A00298E5D /* explosion.sks */; };
+		C3DA99DE20BDFC5F00298E5D /* fuse.sks in Resources */ = {isa = PBXBuildFile; fileRef = C3DA99DD20BDFC5F00298E5D /* fuse.sks */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,6 +29,7 @@
 		C3DA99C720BDEF4400298E5D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C3DA99CF20BDF02A00298E5D /* explosion.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = explosion.sks; sourceTree = "<group>"; };
 		C3DA99D020BDF03300298E5D /* Starfield.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = Starfield.sks; sourceTree = "<group>"; };
+		C3DA99DD20BDFC5F00298E5D /* fuse.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = fuse.sks; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -62,6 +64,7 @@
 			children = (
 				C3DA99B520BDEF4200298E5D /* AppDelegate.swift */,
 				C3DA99CF20BDF02A00298E5D /* explosion.sks */,
+				C3DA99DD20BDFC5F00298E5D /* fuse.sks */,
 				C3DA99B720BDEF4200298E5D /* GameScene.sks */,
 				C3DA99BB20BDEF4200298E5D /* GameScene.swift */,
 				C3DA99BD20BDEF4200298E5D /* GameViewController.swift */,
@@ -133,6 +136,7 @@
 			files = (
 				C3DA99C120BDEF4200298E5D /* Main.storyboard in Resources */,
 				C3DA99B820BDEF4200298E5D /* GameScene.sks in Resources */,
+				C3DA99DE20BDFC5F00298E5D /* fuse.sks in Resources */,
 				C3DA99DB20BDF56B00298E5D /* Starfield.sks in Resources */,
 				C3DA99DC20BDF56F00298E5D /* explosion.sks in Resources */,
 				C3DA99C320BDEF4400298E5D /* Assets.xcassets in Resources */,

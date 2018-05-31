@@ -17,6 +17,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 	
 	var scoreLabel: SKLabelNode!
 	var gameOverLabel: SKLabelNode!
+	var playAgainBtn: SKNode! = nil
+	var playAgainBtnLabel: SKLabelNode!
 	var score = 0 {
 		didSet {
 			scoreLabel.text = "Score: \(score)"
@@ -110,7 +112,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 			location.y = 668
 		}
 	
-		player.position = location
+		player.position = CGPoint(x: location.x + 40, y: location.y)
 		
 	}
 	
@@ -148,9 +150,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 	func gameOver() {
 		
 		isGameOver = true
-		rocketTimer.invalidate()
+		if rocketTimer != nil {
+			rocketTimer.invalidate()
+		}
 		gameTimer.invalidate()
 		gameOverLabel.isHidden = false
+		playAgainBtn.isHidden = false
+		playAgainBtnLabel.isHidden = false
+		
 	}
 	
 	func destroy(object: SKSpriteNode) {
@@ -163,6 +170,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 		object.removeFromParent()
 		object.removeAllActions()
 		camera?.removeAllActions()
+		
+	}
+	
+	func playAgain() {
+		
+		let newScene = GameScene(size: self.size)
+		newScene.scaleMode = self.scaleMode
+		let animation = SKTransition.fade(withDuration: 1.0)
+		self.view?.presentScene(newScene, transition: animation)
 		
 	}
 	
@@ -179,14 +195,40 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 	//MARK: Functions
 	override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
 		
-		rocketTimer = Timer.scheduledTimer(timeInterval: 0.5, target: self, selector: #selector(launchRockets), userInfo: nil, repeats: true)
-		
+		if let touch = touches.first {
+			let location = touch.location(in: self)
+			let tappedNodes = nodes(at: location)
+			
+			for node in tappedNodes {
+				if node.name == "player" {
+					player.position = CGPoint(x: player.position.x + 40, y: player.position.y)
+					rocketTimer = Timer.scheduledTimer(timeInterval: 0.5, target: self, selector: #selector(launchRockets), userInfo: nil, repeats: true)
+				} else if node == playAgainBtn {
+					
+					playAgain()
+				}
+			}
+		}
 	}
+	
 	
 	override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
 		
-		rocketTimer.invalidate()
-		
+		if let touch = touches.first {
+			let location = touch.location(in: self)
+			let tappedNodes = nodes(at: location)
+			
+			for node in tappedNodes {
+				if node.name == "player" {
+					
+					player.position = CGPoint(x: player.position.x - 40, y: player.position.y)
+					
+					if rocketTimer != nil {
+						rocketTimer.invalidate()
+					}
+				}
+			}
+		}
 	}
 	
 	
@@ -213,10 +255,24 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 		
 		gameOverLabel = SKLabelNode(fontNamed: "Chalkduster")
 		gameOverLabel.text = "GAME OVER"
-		gameOverLabel.position = CGPoint(x: 512, y: 384)
+		gameOverLabel.position = CGPoint(x: 512, y: 404)
 		gameOverLabel.horizontalAlignmentMode = .center
 		gameOverLabel.isHidden = true
 		addChild(gameOverLabel)
+		
+		playAgainBtn = SKSpriteNode(color: .green, size: CGSize(width: 160, height: 44))
+		playAgainBtn.position = CGPoint(x: 512, y: 364)
+		playAgainBtn.isHidden = true
+		
+		playAgainBtnLabel = SKLabelNode(fontNamed: "EuphemiaUCAS")
+		playAgainBtnLabel.fontColor = .blue
+		playAgainBtnLabel.fontSize = 24
+		playAgainBtnLabel.text = "Play Again"
+		playAgainBtnLabel.position = CGPoint(x: 0, y: -8)
+		playAgainBtnLabel.horizontalAlignmentMode = .center
+		playAgainBtnLabel.isHidden = true
+		playAgainBtn.addChild(playAgainBtnLabel)
+		addChild(playAgainBtn)
 		
 		score = 0
 		isGameOver = false

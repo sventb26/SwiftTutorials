@@ -102,21 +102,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 	}
 	
 	
-	override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-		guard let touch = touches.first else { return }
-		var location = touch.location(in: self)
-		
-		if location.y < 100 {
-			location.y = 100
-		} else if location.y > 668 {
-			location.y = 668
-		}
-	
-		player.position = CGPoint(x: location.x + 40, y: location.y)
-		
-	}
-	
-	
 	func didBegin(_ contact: SKPhysicsContact) {
 		
 		if contact.bodyA.node?.name == "enemy" && contact.bodyB.node?.name == "rocket" {
@@ -201,7 +186,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 			
 			for node in tappedNodes {
 				if node.name == "player" {
-					player.position = CGPoint(x: player.position.x + 40, y: player.position.y)
+					player.position = CGPoint(x: location.x + 40, y: location.y)
 					rocketTimer = Timer.scheduledTimer(timeInterval: 0.5, target: self, selector: #selector(launchRockets), userInfo: nil, repeats: true)
 				} else if node == playAgainBtn {
 					
@@ -209,6 +194,20 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 				}
 			}
 		}
+	}
+	
+	
+	override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+		guard let touch = touches.first else { return }
+		var location = touch.location(in: self)
+		
+		if location.y < 100 {
+			location.y = 100
+		} else if location.y > 668 {
+			location.y = 668
+		}
+		
+		player.position = CGPoint(x: location.x + 40, y: location.y)
 	}
 	
 	
@@ -263,6 +262,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 		playAgainBtn = SKSpriteNode(color: .green, size: CGSize(width: 160, height: 44))
 		playAgainBtn.position = CGPoint(x: 512, y: 364)
 		playAgainBtn.isHidden = true
+		playAgainBtn.zPosition = 2
 		
 		playAgainBtnLabel = SKLabelNode(fontNamed: "EuphemiaUCAS")
 		playAgainBtnLabel.fontColor = .blue
@@ -271,6 +271,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 		playAgainBtnLabel.position = CGPoint(x: 0, y: -8)
 		playAgainBtnLabel.horizontalAlignmentMode = .center
 		playAgainBtnLabel.isHidden = true
+		playAgainBtnLabel.zPosition = 2
 		playAgainBtn.addChild(playAgainBtnLabel)
 		addChild(playAgainBtn)
 		

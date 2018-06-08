@@ -15,6 +15,8 @@
 		C33B99BC20C732B900674A57 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C33B99BB20C732B900674A57 /* Assets.xcassets */; };
 		C33B99BF20C732B900674A57 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C33B99BD20C732B900674A57 /* LaunchScreen.storyboard */; };
 		C33B99C720C7372200674A57 /* level1.txt in Resources */ = {isa = PBXBuildFile; fileRef = C33B99C620C7372100674A57 /* level1.txt */; };
+		C36BA37620C8603200D56263 /* SVLSpriteNodeButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C36BA37520C8603200D56263 /* SVLSpriteNodeButton.swift */; };
+		C36BA37820C88D1200D56263 /* level2.txt in Resources */ = {isa = PBXBuildFile; fileRef = C36BA37720C88D1200D56263 /* level2.txt */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,6 +30,8 @@
 		C33B99BE20C732B900674A57 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		C33B99C020C732B900674A57 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C33B99C620C7372100674A57 /* level1.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = level1.txt; sourceTree = "<group>"; };
+		C36BA37520C8603200D56263 /* SVLSpriteNodeButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SVLSpriteNodeButton.swift; sourceTree = "<group>"; };
+		C36BA37720C88D1200D56263 /* level2.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = level2.txt; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -63,12 +67,14 @@
 				C33B99AE20C732A800674A57 /* AppDelegate.swift */,
 				C33B99B020C732A900674A57 /* GameScene.sks */,
 				C33B99B420C732A900674A57 /* GameScene.swift */,
+				C36BA37520C8603200D56263 /* SVLSpriteNodeButton.swift */,
 				C33B99B620C732A900674A57 /* GameViewController.swift */,
 				C33B99B820C732A900674A57 /* Main.storyboard */,
 				C33B99BB20C732B900674A57 /* Assets.xcassets */,
 				C33B99BD20C732B900674A57 /* LaunchScreen.storyboard */,
 				C33B99C020C732B900674A57 /* Info.plist */,
 				C33B99C620C7372100674A57 /* level1.txt */,
+				C36BA37720C88D1200D56263 /* level2.txt */,
 			);
 			path = Project26;
 			sourceTree = "<group>";
@@ -133,6 +139,7 @@
 			files = (
 				C33B99C720C7372200674A57 /* level1.txt in Resources */,
 				C33B99BA20C732A900674A57 /* Main.storyboard in Resources */,
+				C36BA37820C88D1200D56263 /* level2.txt in Resources */,
 				C33B99B120C732A900674A57 /* GameScene.sks in Resources */,
 				C33B99BC20C732B900674A57 /* Assets.xcassets in Resources */,
 				C33B99BF20C732B900674A57 /* LaunchScreen.storyboard in Resources */,
@@ -148,6 +155,7 @@
 			files = (
 				C33B99B520C732A900674A57 /* GameScene.swift in Sources */,
 				C33B99B720C732A900674A57 /* GameViewController.swift in Sources */,
+				C36BA37620C8603200D56263 /* SVLSpriteNodeButton.swift in Sources */,
 				C33B99AF20C732A800674A57 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

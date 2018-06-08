@@ -1,4 +1,4 @@
-//
+ //
 //  GameScene.swift
 //  Project26
 //
@@ -18,14 +18,17 @@ enum CollisionTypes: UInt32 {
 	case finish = 16
 }
 
-class GameScene: SKScene, SKPhysicsContactDelegate {
+class GameScene: SKScene, SKPhysicsContactDelegate, SVLSpriteNodeButtonDelegate {
 
 	//MARK: Properties
 	var player: SKSpriteNode!
 	var lastTouchPosition: CGPoint?
 	var motionManager: CMMotionManager!
+	var lives: [SKSpriteNode]!
 	
 	var scoreLabel: SKLabelNode!
+
+	var nextLevel = 1
 	
 	var score = 0 {
 		didSet {
@@ -34,7 +37,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 	}
 	
 	var isGameOver = false
-	
+	var nextLevelBtn: SVLSpriteNodeButton!
 	
 	//MARK: Functions
     override func didMove(to view: SKView) {
@@ -50,12 +53,22 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 		loadLevel()
 		
 		scoreLabel = SKLabelNode(fontNamed: "EuphemiaUCAS")
-		scoreLabel.text = "Score: 0"
+		scoreLabel.text = "Score: \(score)"
 		scoreLabel.horizontalAlignmentMode = .left
-		scoreLabel.position = CGPoint(x: 16, y: 16)
+		scoreLabel.position = CGPoint(x: 50, y: 16)
 		addChild(scoreLabel)
 		
+		let starIcon = SKSpriteNode(imageNamed: "star")
+		starIcon.scale(to: CGSize(width: starIcon.size.width / 2, height: starIcon.size.width / 2))
+		starIcon.position = CGPoint(x: 26, y: 32)
+		addChild(starIcon)
+		
 		createPlayer()
+		
+		nextLevelBtn = childNode(withName: "nextLevelBtn") as! SVLSpriteNodeButton
+		nextLevelBtn.isUserInteractionEnabled = true
+		nextLevelBtn.isHidden = true
+		nextLevelBtn.delegate = self
 		
 		motionManager = CMMotionManager()
 		motionManager.startAccelerometerUpdates()
@@ -101,9 +114,71 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 			score += 1
 			
 		} else if node.name == "finish" {
-		
-			print("GAME OVER!")
 			
+			endLevel(node: node)
+			
+		}
+	}
+	
+	
+	func endLevel(node: SKNode) {
+		
+		//remove player from parent.
+		
+		animateFinishNode(node: node)
+		removeRemainingStars()
+		
+	}
+	
+	func animateFinishNode(node: SKNode) {
+		
+		if node.name == "finish" {
+			
+			let move = SKAction.move(to: CGPoint(x: 512, y: 404), duration: 0.90)
+			let scale = SKAction.scale(by: 3.0, duration: 1.0)
+			let scaleBack = SKAction.scale(by: 0.80, duration: 0.30)
+			let sequence = SKAction.sequence([move, scale, scaleBack])
+			
+			node.run(sequence) { [unowned self] in
+				
+				self.animateNextLevelBtn()
+			}
+		}
+	}
+	
+	
+	func animateFinishStars() {
+		
+		print("AnimateFinishStars executes.")
+		
+	}
+	
+	
+	func animateNextLevelBtn() {
+		
+		nextLevelBtn.isHidden = false
+		let appear = SKAction.fadeAlpha(to: 1, duration: 0.30)
+		let sequence = SKAction.sequence([appear])
+		nextLevelBtn.run(sequence)
+		
+		print("Animate Button executed.")
+		
+	}
+	
+	
+	func removeRemainingStars() {
+		
+		for node in self.children {
+			
+			if node.name == "star" {
+				
+				let scale = SKAction.scale(by: 0.0001, duration: 0.30)
+				let remove = SKAction.removeFromParent()
+				let sequence = SKAction.sequence([scale, remove])
+				
+				node.run(sequence)
+				
+			}
 		}
 	}
 	
@@ -145,7 +220,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 	
 	
 	override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+		
 		lastTouchPosition = nil
+		
 	}
 	
 	
@@ -172,7 +249,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 	
 	func loadLevel() {
 		
-		if let levelPath = Bundle.main.path(forResource: "level1", ofType: "txt") {
+		if let levelPath = Bundle.main.path(forResource: "level\(nextLevel)", ofType: "txt") {
 			if let levelString = try? String(contentsOfFile: levelPath) {
 				let lines = levelString.components(separatedBy: "\n")
 				
@@ -237,5 +314,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 		}
 	}
 	
+	//MARK: - SVLSpriteNodeButtonDelegate
+	func spriteNodeButtonPressed(_ button: SVLSpriteNodeButton) {
+		
+		print("We are in the scene.")
+		//Add function here.
+	}
 	
 }

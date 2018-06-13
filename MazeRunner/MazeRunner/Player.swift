@@ -10,6 +10,7 @@ import SpriteKit
 
 class Player {
 	
+	
 	class func createPlayer() -> SKSpriteNode {
 		
 		let node = SKSpriteNode(imageNamed: "player")
@@ -26,4 +27,7 @@ class Player {
 		return node
 		
 	}
+	
+	
+	
 }

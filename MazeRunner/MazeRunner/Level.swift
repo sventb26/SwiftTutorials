@@ -53,6 +53,12 @@ class Level: SKNode {
 							
 							let pokal = Pokal.createPokal(position: position)
 							self.addChild(pokal)
+							
+						} else if letter == "p" {
+							
+							let player = Player.createPlayer()
+							self.addChild(player)
+							
 						}
 					}
 				}
@@ -60,5 +66,4 @@ class Level: SKNode {
 		}
 	}
 	
-
 }

@@ -14,11 +14,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 	
 	var bottomBar: BottomBar!
 	
+	let button = SKSpriteNode(imageNamed: "nextLevelBtn")
+	
 	var level = 1
 	
 	var levelScene: Level!
 	
 	var player: SKSpriteNode!
+	
+	var playerPosition = CGPoint(x: 96, y: 672)
 	
 	var lives = 5
 	
@@ -55,10 +59,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 		bottomBar = BottomBar()
 		addChild(bottomBar)
 		
-		//Set player
-		player = Player.createPlayer()
-		addChild(player)
+		//Set the next level button
+		button.name = "nextLevelBtn"
+		button.position =  CGPoint(x: 512, y: 300)
+		button.size = CGSize(width: button.size.width * 0.8, height: button.size.height * 0.8)
+		button.alpha = 0
+		button.isHidden = true
+		addChild(button)
 		
+		//create player
+		player = Player.createPlayer()
+		playerPosition = player.position
+		addChild(player)
 		
 		//Engage motion manager
 		motionManager = CMMotionManager()
@@ -67,6 +79,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 		physicsWorld.contactDelegate = self
 		
     }
+	
+	
+	func showButton() {
+		
+		button.isHidden = false
+		let appear = SKAction.fadeAlpha(to: 1, duration: 0.5)
+		let scale = SKAction.scale(by: 1.2, duration: 0.25)
+		let sequence = SKAction.sequence([appear, scale])
+		
+		button.run(sequence)
+
+	}
 	
 	
 	func didBegin(_ contact: SKPhysicsContact) {
@@ -118,8 +142,36 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 			
 		} else if node.name == "finish" {
 			
-			//do something
+			player.removeFromParent()
 			
+			
+			let move = SKAction.move(to: CGPoint(x: 512, y: 404), duration: 0.90)
+			let scale = SKAction.scale(by: 3.0, duration: 1.0)
+			let scaleBack = SKAction.scale(by: 0.80, duration: 0.30)
+			let sequence = SKAction.sequence([move, scale, scaleBack])
+			
+			node.run(sequence) { [unowned self] in
+				
+				self.showButton()
+		
+			}
+		}
+	}
+	
+	
+	func removeStars() {
+		
+		for node in self.children {
+			
+			if node.name == "star" {
+				
+				let scale = SKAction.scale(by: 0.0001, duration: 0.3)
+				let remove = SKAction.removeFromParent()
+				let sequence = SKAction.sequence([scale, remove])
+				
+				node.run(sequence)
+				
+			}
 		}
 	}
 	
@@ -148,6 +200,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 		
 		#endif
 	}
+
 	
     
     func touchDown(atPoint pos : CGPoint) {
@@ -162,12 +215,25 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func touchUp(atPoint pos : CGPoint) {
 		
     }
-    
+	
+	
 	override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
 		
 		if let touch = touches.first {
 			let location = touch.location(in: self)
+			let tappedNodes = nodes(at: location)
 			lastTouchPosition = location
+			
+			for node in tappedNodes {
+				
+				if node.name == "nextLevelBtn" {
+					
+					levelScene.removeFromParent()
+					levelScene = Level(level: 2)
+					addChild(levelScene)
+					
+				}
+			}
 		}
 	}
 	
@@ -184,6 +250,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 	override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
 		
 		lastTouchPosition = nil
+		
 		
 	}
 	

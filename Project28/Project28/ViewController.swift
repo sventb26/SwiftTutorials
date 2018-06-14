@@ -54,11 +54,23 @@ class ViewController: UIViewController {
 	func unlockSecretMessage() {
 		secret.isHidden = false
 		title = "Secret stuff!"
+		navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(lockSecretMessage))
+		
 		
 		if let text = KeychainWrapper.standard.string(forKey: "SecretMessage") {
 			
 			secret.text = text
 		}
+	}
+	
+	
+	@objc func lockSecretMessage() {
+		
+		secret.isHidden = true
+		title = "Secret stuff!"
+		
+		navigationItem.rightBarButtonItem = nil
+		
 	}
 	
 	
@@ -74,6 +86,7 @@ class ViewController: UIViewController {
 		}
 		
 	}
+	
 	
 	
 	//MARK: Methods

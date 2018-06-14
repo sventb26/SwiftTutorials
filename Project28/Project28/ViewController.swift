@@ -66,8 +66,9 @@ class ViewController: UIViewController {
 	
 	@objc func lockSecretMessage() {
 		
+		secret.endEditing(true)
 		secret.isHidden = true
-		title = "Secret stuff!"
+		title = "Nothing to see here"
 		
 		navigationItem.rightBarButtonItem = nil
 		
@@ -81,6 +82,7 @@ class ViewController: UIViewController {
 			_ = KeychainWrapper.standard.set(secret.text, forKey: "SecretMessage")
 			secret.resignFirstResponder()
 			secret.isHidden = true
+			
 			title = "Nothing to see here"
 			
 		}
@@ -116,12 +118,14 @@ class ViewController: UIViewController {
 	//MARK: Override Functions
 	override func viewDidLoad() {
 		super.viewDidLoad()
+		
 		let notificationCenter = NotificationCenter.default
 		notificationCenter.addObserver(self, selector: #selector(adjustForKeyboard), name: Notification.Name.UIKeyboardWillHide, object: nil)
 		notificationCenter.addObserver(self, selector: #selector(adjustForKeyboard), name: Notification.Name.UIKeyboardDidChangeFrame, object: nil)
 		notificationCenter.addObserver(self, selector: #selector(saveSecretmessage), name: Notification.Name.UIApplicationWillResignActive, object: nil)
 		
 		title = "Nothing to see here"
+		
 		
 	}
 
